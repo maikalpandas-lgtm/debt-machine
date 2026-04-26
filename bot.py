@@ -2,8 +2,9 @@ import urllib.request
 import urllib.parse
 import json
 import time
+import os
 
-BOT_TOKEN = "8716982972:AAG2uhOuzNpEyz1FFnMprxJQRfG6wcYqwMQ"
+BOT_TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
 WEBAPP_URL = "https://maikalpandas-lgtm.github.io/debt-machine/"
 
 def send_message(chat_id, text, reply_markup=None):
