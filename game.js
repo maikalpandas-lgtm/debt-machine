@@ -438,6 +438,10 @@ async function spin(){
             result.allMatchedCells.forEach(({r,c})=>$(`cell-${r}-${c}`).classList.add('matched'));
             drawWinLines(result.allMatchedCells);
             sfx(result.totalPayout>=200?'jackpot':'win');
+            
+            // Let the player see the winning lines first
+            await delay(800);
+            
             G.coins+=result.totalPayout;
             G.totalEarned+=result.totalPayout;
             G.maxBank=Math.max(G.maxBank,G.atm+G.coins);
