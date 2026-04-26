@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Машина Долгов — Крути или Умри</title>
+    <meta name="description" content="Тёмная рогалик-игра со слот-машиной. Выплати долг или упади в яму.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Press+Start+2P&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div id="particles"></div>
+    <div id="app">
+
+        <!-- ===== TITLE SCREEN ===== -->
+        <div id="screen-title" class="screen active">
+            <div class="title-glow"></div>
+            <h1 class="title-text">DEBT<br><span class="title-accent">MACHINE</span></h1>
+            <p class="title-sub">Spin. Win. Survive.</p>
+            <button id="btn-start" class="btn btn-primary pulse-glow"><span>▶ ИГРАТЬ</span></button>
+            <button id="btn-daily" class="btn btn-daily hidden"><span>🎁 ЕЖЕДНЕВНЫЙ БОНУС (+5 🎫)</span></button>
+            <!-- Best record on title -->
+            <div class="title-record" id="title-record"></div>
+            <button id="btn-achievements" class="btn btn-achievements"><span>🏆 ДОСТИЖЕНИЯ</span></button>
+            <div class="title-footer">
+                <span class="skull-icon">☠️</span> Выплати долг или упадёшь в яму <span class="skull-icon">☠️</span>
+            </div>
+        </div>
+
+        <!-- ===== ACHIEVEMENTS SCREEN ===== -->
+        <div id="screen-achievements" class="screen">
+            <h2 class="ach-screen-title">🏆 ДОСТИЖЕНИЯ</h2>
+            <div class="ach-progress" id="ach-progress"></div>
+            <div class="ach-grid" id="ach-grid"></div>
+            <button id="btn-ach-back" class="btn btn-primary"><span>← НАЗАД</span></button>
+        </div>
+
+        <!-- ===== SPIN CHOICE SCREEN ===== -->
+        <div id="screen-spin-choice" class="screen">
+            <h2 class="choice-title-text">РАУНД <span id="round-num-choice">1</span> / 3</h2>
+            <p class="choice-sub">Выбери кол-во вращений</p>
+            <div class="spin-options">
+                <button class="spin-option" id="opt-3-spins">
+                    <div class="opt-spins">3 спина</div>
+                    <div class="opt-tickets">+3 🎫</div>
+                    <div class="opt-desc">Меньше шансов, больше билетов</div>
+                </button>
+                <button class="spin-option" id="opt-7-spins">
+                    <div class="opt-spins">7 спинов</div>
+                    <div class="opt-tickets">+1 🎫</div>
+                    <div class="opt-desc">Больше шансов, меньше билетов</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== GAME SCREEN ===== -->
+        <div id="screen-game" class="screen">
+            <!-- Top HUD -->
+            <div id="hud">
+                <div class="hud-item" id="hud-deadline">
+                    <div class="hud-label">ДЕДЛАЙН</div>
+                    <div class="hud-value" id="deadline-num">1</div>
+                </div>
+                <div class="hud-item hud-debt" id="hud-debt">
+                    <div class="hud-label">ДОЛГ</div>
+                    <div class="hud-value" id="debt-amount">$500</div>
+                    <div class="debt-bar-wrap"><div class="debt-bar" id="debt-bar"></div></div>
+                </div>
+                <div class="hud-item" id="hud-round">
+                    <div class="hud-label">РАУНД</div>
+                    <div class="hud-value" id="round-num">1/3</div>
+                </div>
+                <div class="hud-item" id="hud-spins">
+                    <div class="hud-label">СПИНЫ</div>
+                    <div class="hud-value" id="spins-left">3</div>
+                </div>
+            </div>
+
+            <!-- Bank / ATM -->
+            <div id="bank-row">
+                <div id="bank-display">
+                    <div class="bank-icon">🏧</div>
+                    <div class="bank-amount" id="bank-amount">$0</div>
+                </div>
+                <div id="coins-display">
+                    <div class="coins-icon">🪙</div>
+                    <div class="coins-amount" id="coins-amount">$0</div>
+                </div>
+                <div id="luck-display">
+                    <span class="luck-icon">🍀</span>
+                    <span class="luck-value" id="luck-value">0</span>
+                </div>
+                <div id="tickets-display">
+                    <span class="ticket-icon">🎫</span>
+                    <span class="ticket-value" id="ticket-value">0</span>
+                </div>
+            </div>
+
+            <!-- 3x5 Slot Machine Cabinet -->
+            <div id="slot-machine">
+                <div class="cabinet">
+                    <!-- Top Marquee -->
+                    <div class="marquee">
+                        <div class="marquee-light ml1"></div>
+                        <div class="marquee-light ml2"></div>
+                        <div class="marquee-light ml3"></div>
+                        <div class="marquee-title">💀 DEBT MACHINE 💀</div>
+                        <div class="marquee-light ml4"></div>
+                        <div class="marquee-light ml5"></div>
+                        <div class="marquee-light ml6"></div>
+                    </div>
+                    <!-- Chrome top bar -->
+                    <div class="chrome-bar top-bar">
+                        <div class="rivet"></div>
+                        <div class="machine-top-light" id="machine-light"></div>
+                        <div class="rivet"></div>
+                    </div>
+                    <!-- Glass panel with reels -->
+                    <div class="glass-panel">
+                        <div class="glass-reflection"></div>
+                        <div id="grid-wrapper">
+                            <div id="grid-container"></div>
+                            <svg id="win-lines" class="win-lines-svg"></svg>
+                        </div>
+                    </div>
+                    <!-- Chrome bottom bar -->
+                    <div class="chrome-bar bottom-bar">
+                        <div class="rivet"></div>
+                        <div class="payout-label">ЛИНИИ × СИМВОЛЫ = 💰</div>
+                        <div class="rivet"></div>
+                    </div>
+                </div>
+                <!-- Lever -->
+                <div class="lever" id="lever">
+                    <div class="lever-rod"></div>
+                    <div class="lever-ball"></div>
+                </div>
+            </div>
+
+            <!-- Payout info -->
+            <div id="spin-result">
+                <span id="result-text"></span>
+            </div>
+
+            <!-- Action buttons -->
+            <div id="action-bar">
+                <button id="btn-spin" class="btn btn-spin"><span class="spin-text">🎰 КРУТИТЬ</span></button>
+                <button id="btn-deposit" class="btn btn-deposit hidden"><span>🏧 В БАНК</span></button>
+            </div>
+
+            <!-- Active charms -->
+            <div id="active-charms"></div>
+        </div>
+
+        <!-- ===== SHOP SCREEN ===== -->
+        <div id="screen-shop" class="screen">
+            <h2 class="shop-title">🧲 ТАЛИСМАНЫ</h2>
+            <p class="shop-sub" id="shop-tickets-display">🎫 0 билетов</p>
+            <div id="charm-list" class="charm-grid"></div>
+            <div class="shop-actions">
+                <button id="btn-reroll" class="btn btn-reroll"><span>🔄 ОБНОВИТЬ (2🎫)</span></button>
+                <button id="btn-continue" class="btn btn-primary"><span>➡️ ДАЛЬШЕ</span></button>
+            </div>
+        </div>
+
+        <!-- ===== PHONE CALL SCREEN ===== -->
+        <div id="screen-phone" class="screen">
+            <div class="phone-ring">📞</div>
+            <h2 class="phone-title">ВХОДЯЩИЙ ЗВОНОК...</h2>
+            <p class="phone-message" id="phone-message"></p>
+            <div class="phone-choices" id="phone-choices"></div>
+        </div>
+
+        <!-- ===== GAME OVER SCREEN ===== -->
+        <div id="screen-gameover" class="screen">
+            <div class="pit-animation" id="pit-anim"><div class="falling-text">☠️ В ЯМУ ☠️</div></div>
+            <div class="gameover-content">
+                <h2 class="gameover-title">КОНЕЦ ИГРЫ</h2>
+                <div class="gameover-stats">
+                    <div class="stat-row"><span>Дедлайнов пережито</span><span id="go-deadlines">0</span></div>
+                    <div class="stat-row"><span>Всего заработано</span><span id="go-earned">$0</span></div>
+                    <div class="stat-row"><span>Макс. банк</span><span id="go-maxbank">$0</span></div>
+                </div>
+                <!-- Best record -->
+                <div class="best-record" id="best-record"></div>
+                <!-- Achievements -->
+                <div class="achievements" id="achievements-list"></div>
+                <div class="gameover-buttons">
+                    <button id="btn-continue-stars" class="btn btn-stars"><span>⭐ ПРОДОЛЖИТЬ (5 Stars)</span></button>
+                    <button id="btn-retry" class="btn btn-primary"><span>🔄 ЕЩЁ РАЗ</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== DEADLINE RESULT SCREEN ===== -->
+        <div id="screen-deadline-result" class="screen">
+            <div class="deadline-result-content" id="deadline-result-content"></div>
+        </div>
+
+        <!-- ===== WIN POPUP ===== -->
+        <div id="popup-win" class="popup hidden">
+            <div class="popup-content">
+                <div class="popup-icon">💰</div>
+                <div class="popup-amount" id="popup-amount">+$0</div>
+                <div class="popup-combo" id="popup-combo"></div>
+            </div>
+        </div>
+
+        <!-- ===== 666 POPUP ===== -->
+        <div id="popup-666" class="popup hidden">
+            <div class="popup-content popup-danger">
+                <div class="popup-icon popup-skull">☠️</div>
+                <div class="popup-title danger-text">6 6 6</div>
+                <div class="popup-detail">Монеты за раунд ПОТЕРЯНЫ!</div>
+            </div>
+        </div>
+
+        <!-- ===== LUCK BOOST POPUP ===== -->
+        <div id="popup-luck" class="popup hidden">
+            <div class="popup-content popup-luck-boost">
+                <div class="popup-icon">🍀</div>
+                <div class="popup-title luck-text" id="luck-boost-text">+5 LUCK</div>
+                <div class="popup-detail">Буст жалости!</div>
+            </div>
+        </div>
+
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
