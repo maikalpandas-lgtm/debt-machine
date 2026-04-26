@@ -206,7 +206,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .btn-deposit{background:linear-gradient(135deg,var(--green-dim),var(--green));color:#000;font-size:11px;padding:14px 24px;border-radius:12px}
 
 /* ===== CHARMS ===== */
-#active-charms{position:absolute;bottom:10px;left:10px;display:flex;gap:4px;flex-wrap:wrap;max-width:260px;align-items:center}
+#active-charms{position:absolute;bottom:max(24px, env(safe-area-inset-bottom, 34px));left:16px;display:flex;gap:4px;flex-wrap:wrap;max-width:260px;align-items:center;z-index:10}
 .charm-counter{font-family:var(--font-pixel);font-size:8px;color:var(--purple);opacity:.7}
 .charm-badge{background:var(--bg-card);border:1px solid var(--purple);border-radius:6px;padding:3px 6px;font-size:11px;display:flex;align-items:center;gap:3px;color:var(--purple);box-shadow:0 0 8px rgba(180,74,255,.15)}
 .charm-badge.empty{border-style:dashed;opacity:.3;color:var(--text-dim)}
