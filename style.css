@@ -7,7 +7,7 @@
     --gold:#ffd700;--gold-dim:#cc9900;
     --purple:#b44aff;
     --text:#e8e8e8;--text-dim:#888;
-    --font-display:'Creepster',cursive;
+    --font-display:'Rubik Glitch', 'Creepster', system-ui, sans-serif;
     --font-pixel:'Press Start 2P',monospace;
     --font-body:'Inter',sans-serif;
 }
