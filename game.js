@@ -6,6 +6,8 @@ if(tg){
     tg.ready();
     tg.expand();
     tg.disableVerticalSwipes();
+    // Request fullscreen (Bot API 8.0+)
+    if(tg.requestFullscreen) tg.requestFullscreen();
     // Apply Telegram theme
     document.documentElement.style.setProperty('--tg-bg', tg.themeParams?.bg_color || '#0a0a0f');
 }
