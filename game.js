@@ -25,6 +25,50 @@ const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
 function getAudio(){ if(!audioCtx) audioCtx=new AudioCtx(); return audioCtx; }
 
+// ===== DARK AMBIENT (Procedural) =====
+let ambientStarted = false;
+function startAmbient() {
+    if(ambientStarted) return;
+    ambientStarted = true;
+    try {
+        const ctx = getAudio();
+        if(ctx.state === 'suspended') ctx.resume();
+        
+        const masterGain = ctx.createGain();
+        masterGain.gain.value = 0.03; // Quiet background
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 150; // Muffled, underwater feel
+        
+        masterGain.connect(filter);
+        filter.connect(ctx.destination);
+        
+        const osc1 = ctx.createOscillator();
+        osc1.type = 'triangle';
+        osc1.frequency.value = 45; // Deep sub
+        osc1.connect(masterGain);
+        osc1.start();
+        
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.value = 47.5; // Detuned for eerie beating
+        osc2.connect(masterGain);
+        osc2.start();
+        
+        // Slow LFO for volume breathing (0.1 Hz = 10s cycle)
+        const lfo = ctx.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.1;
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 0.02;
+        lfo.connect(lfoGain);
+        lfoGain.connect(masterGain.gain);
+        lfo.start();
+    } catch(e) {}
+}
+document.body.addEventListener('click', startAmbient, {once:true});
+
 function sfx(type){
     try{
         const ctx=getAudio();
